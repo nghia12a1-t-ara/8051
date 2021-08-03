@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\SPI.obj" 
+TO ".\Objects\SPI_Lib" 
+PRINT(".\Listings\SPI_Lib.m51")
