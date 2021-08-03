@@ -1,0 +1,302 @@
+C51 COMPILER V9.52.0.0   LCD4                                                              02/22/2020 18:23:44 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE LCD4
+OBJECT MODULE PLACED IN .\LCD4.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\Lib\LCD4.c OMF2 BROWSE DEBUG PRINT(.\LCD4.lst) TABS(2) OBJECT(.\LCD4.obj
+                    -)
+
+line level    source
+
+   1          /*------------------------------------------------------------------*-
+   2              Lcd4.c
+   3            ---------------------------------------
+   4              - Written by Nguyen Thanh Dang
+   5              - Created date:   16/05/2012
+   6              - Last Modified:  16/05/2012
+   7          
+   8              - Require:  
+   9                * Declare hardware connections (in Port.h). Ex:
+  10                  sbit LCD_RS = P0^0;
+  11                  sbit LCD_RW = P0^1; (optional)
+  12                  sbit LCD_EN = P0^2;
+  13                  sbit LCD_D4 = P2^4;
+  14                  sbit LCD_D5 = P2^5;
+  15                  sbit LCD_D6 = P2^6;
+  16                  sbit LCD_D7 = P2^7;
+  17                * Define USE_LCD_RW and USE_CHECK_BUSY (in Main.h) if you need. Ex:
+  18                  #define USE_LCD_RW
+  19                  #define USE_CHECK_BUSY  
+  20                * Use LX51 (Option for Target - Device tab - 
+  21                  Use Extended Linker (LX51)...)
+  22                * Use REMOVEUNUSED linker directive (Option for Target - 
+  23                  LX51 Misc tab - Misc controls: RU)
+  24          -*------------------------------------------------------------------*/
+  25          #include "main.h"
+  26          #include "port.h"
+  27          #include "LCD4.h"
+  28          #include "Delay.h"
+  29          #include "String.h"
+  30          
+  31          #ifdef  USE_CHECK_BUSY
+                #message "Lcd - Use check busy method."
+                #ifndef USE_LCD_RW
+                  #error "Lcd - Define USE_LCD_RW, please."
+                #endif
+              #else
+  37          #endif
+  38          
+  39          /*-------------------------------------*-
+  40            Prototype of Local Functions  
+  41          -*-------------------------------------*/
+  42          void Lcd_Write_High_Nibble(unsigned char);
+  43          void Lcd_Write_Low_Nibble(unsigned char );
+  44          void Lcd_Delay_us(unsigned char);
+  45          #ifdef  USE_CHECK_BUSY
+              void Lcd_Busy();
+              #endif
+  48          
+  49          
+  50          /*-------------------------------------*-
+  51            Lcd_Write_High_Nibble - Local Function
+  52          -*-------------------------------------*/
+  53          void Lcd_Write_High_Nibble(unsigned char b)
+  54          {
+C51 COMPILER V9.52.0.0   LCD4                                                              02/22/2020 18:23:44 PAGE 2   
+
+  55   1        LCD_D7 = b & 0x80;
+  56   1        LCD_D6 = b & 0x40;
+  57   1        LCD_D5 = b & 0x20;
+  58   1        LCD_D4 = b & 0x10;  
+  59   1      }
+  60          
+  61          /*-------------------------------------*-
+  62            Lcd_Write_High_Low - Local Function
+  63          -*-------------------------------------*/
+  64          void Lcd_Write_Low_Nibble(unsigned char b)
+  65          {
+  66   1        LCD_D7 = b & 0x08;
+  67   1        LCD_D6 = b & 0x04;
+  68   1        LCD_D5 = b & 0x02;
+  69   1        LCD_D4 = b & 0x01;
+  70   1      }
+  71          
+  72          /*-------------------------------------*-
+  73            Lcd_Delay_us - Local Function
+  74          -*-------------------------------------*/
+  75          void Lcd_Delay_us(unsigned char t)
+  76          {
+  77   1        while(t--);
+  78   1      }
+  79          
+  80          /*-------------------------------------*-
+  81            Lcd_Busy - Local Function
+  82          -*-------------------------------------*/
+  83          #ifdef  USE_CHECK_BUSY
+              void Lcd_Busy()
+              {
+                bit busy_flag;
+                LCD_D7 = 1;     // Read data
+                LCD_RS = 0;
+                LCD_RW = 1;     // Read
+                do{
+                  LCD_EN = 0;   // Read High Nibble
+                  LCD_EN = 1;
+                  busy_flag = LCD_D7;
+                  LCD_EN = 0;   // Read Low Nibble
+                  LCD_EN = 1;
+                }while(busy_flag);
+                LCD_EN = 0; 
+              }
+              #endif
+ 100          
+ 101          /*-------------------------------------*-
+ 102            Lcd_Init
+ 103            - Khoi tao LCD che do 4 bit, font 5x7
+ 104          -*-------------------------------------*/
+ 105          void Lcd_Init()
+ 106          { 
+ 107   1        LCD_RS = 0;
+ 108   1        LCD_EN = 0;
+ 109   1      #ifdef  USE_LCD_RW
+                LCD_RW = 0;
+              #endif
+ 112   1        
+ 113   1        Delay_ms(20);
+ 114   1      
+ 115   1        Lcd_Write_Low_Nibble(0x03);
+ 116   1        LCD_EN = 1;
+C51 COMPILER V9.52.0.0   LCD4                                                              02/22/2020 18:23:44 PAGE 3   
+
+ 117   1        LCD_EN = 0;
+ 118   1          Delay_ms(5);
+ 119   1      
+ 120   1        Lcd_Write_Low_Nibble(0x03);
+ 121   1        LCD_EN = 1;
+ 122   1        LCD_EN = 0;
+ 123   1          Lcd_Delay_us(100);
+ 124   1      
+ 125   1        Lcd_Write_Low_Nibble(0x03);
+ 126   1        LCD_EN = 1;
+ 127   1        LCD_EN = 0;
+ 128   1      #ifdef  USE_CHECK_BUSY
+                Lcd_Busy(); 
+              #else
+ 131   1        Delay_ms(1);
+ 132   1      #endif
+ 133   1      
+ 134   1        Lcd_Write_Low_Nibble(0x02);
+ 135   1        LCD_EN = 1;
+ 136   1        LCD_EN = 0;
+ 137   1        Delay_ms(1);
+ 138   1          
+ 139   1        Lcd_Cmd(_LCD_4BIT_2LINE_5x7FONT);
+ 140   1        Lcd_Cmd(_LCD_TURN_ON);
+ 141   1        Lcd_Cmd(_LCD_CLEAR);
+ 142   1        Lcd_Cmd(_LCD_ENTRY_MODE);
+ 143   1      }
+ 144          
+ 145          /*-------------------------------------*-
+ 146            Lcd_Cmd
+ 147            - Gui lenh cho LCD
+ 148          -*-------------------------------------*/
+ 149          void Lcd_Cmd(unsigned char cmd)
+ 150          {
+ 151   1      #ifdef  USE_LCD_RW
+                LCD_RW = 0;
+              #endif
+ 154   1        LCD_RS = 0;
+ 155   1        Lcd_Write_High_Nibble(cmd); 
+ 156   1        LCD_EN = 1;
+ 157   1        LCD_EN = 0;
+ 158   1      
+ 159   1        Lcd_Write_Low_Nibble(cmd);
+ 160   1        LCD_EN = 1;
+ 161   1        LCD_EN = 0;
+ 162   1      
+ 163   1      #ifdef  USE_CHECK_BUSY
+                Lcd_Busy(); 
+              #else
+ 166   1        switch(cmd)
+ 167   1        {
+ 168   2          case _LCD_CLEAR:
+ 169   2          case _LCD_RETURN_HOME:
+ 170   2            Delay_ms(2);
+ 171   2            break;
+ 172   2          default:
+ 173   2            Lcd_Delay_us(37);
+ 174   2            break;
+ 175   2        }
+ 176   1      #endif
+ 177   1      }
+ 178          
+C51 COMPILER V9.52.0.0   LCD4                                                              02/22/2020 18:23:44 PAGE 4   
+
+ 179          /*-------------------------------------*-
+ 180            Lcd_Chr_Cp
+ 181          -*-------------------------------------*/
+ 182          void Lcd_Chr_Cp(unsigned char achar)
+ 183          {
+ 184   1      #ifdef  USE_LCD_RW
+                LCD_RW = 0;
+              #endif
+ 187   1        LCD_RS = 1;
+ 188   1        Lcd_Write_High_Nibble(achar);
+ 189   1        LCD_EN = 1;
+ 190   1        LCD_EN = 0;
+ 191   1        
+ 192   1        Lcd_Write_Low_Nibble(achar);
+ 193   1        LCD_EN = 1;
+ 194   1        LCD_EN = 0;
+ 195   1        
+ 196   1      #ifdef  USE_CHECK_BUSY
+                Lcd_Busy(); 
+              #else
+ 199   1        Lcd_Delay_us(37+4);
+ 200   1      #endif  
+ 201   1      } 
+ 202          
+ 203          /*-------------------------------------*-
+ 204            Lcd_Chr
+ 205            - In ky tu ra man hinh tai (row, column)
+ 206          -*-------------------------------------*/
+ 207          void Lcd_Chr(unsigned char row, unsigned char column, 
+ 208            unsigned char out_char)
+ 209          {
+ 210   1        unsigned char add;
+ 211   1        add = (row==1?0x80:0xC0);
+ 212   1        add += (column - 1);
+ 213   1        Lcd_Cmd(add);
+ 214   1        Lcd_Chr_Cp(out_char);
+ 215   1      }
+ 216          
+ 217          void Lcd_Out_Cp(unsigned char * str)
+ 218          {
+ 219   1        unsigned char i = 0;
+ 220   1        while(str[i])
+ 221   1        {
+ 222   2          Lcd_Chr_Cp(str[i]);
+ 223   2          i++;
+ 224   2        }
+ 225   1      }
+ 226          
+ 227          /*-------------------------------------*-
+ 228            Lcd_Out
+ 229            - In chuoi (text) ra man hinh
+ 230            - Vi tri bat dau tai (row, column)
+ 231          -*-------------------------------------*/
+ 232          void Lcd_Out(unsigned char row, unsigned char column, 
+ 233            unsigned char* text)
+ 234          {
+ 235   1        unsigned char add;
+ 236   1        add = (row==1?0x80:0xC0);
+ 237   1        add += (column - 1);
+ 238   1        Lcd_Cmd(add);
+ 239   1        Lcd_Out_Cp(text); 
+ 240   1      }
+C51 COMPILER V9.52.0.0   LCD4                                                              02/22/2020 18:23:44 PAGE 5   
+
+ 241          
+ 242          /*-------------------------------------*-
+ 243            Lcd_Custom_Chr Function
+ 244            - Tao ky tu tren LCD
+ 245            - Tham so:
+ 246              location: Vi tri tren CGRAM (0÷7)
+ 247              lcd_char: Con tro den mang Font ky tu
+ 248            - Ex: Tao ky tu "Clock" sau do in len dong 1, cot 1
+ 249              unsigned char code Lcd_Char_Clock[] = {14,21,21,23,17,17,14,0};
+ 250              //...
+ 251              Lcd_Init();
+ 252              Lcd_Custom_Chr(0,Lcd_Char_Clock);
+ 253              Lcd_Chr(1,1,0);
+ 254              //...
+ 255          -*-------------------------------------*/
+ 256          void Lcd_Custom_Chr(unsigned char location, unsigned char * lcd_char) 
+ 257          {
+ 258   1          unsigned char i;
+ 259   1          Lcd_Cmd(0x40+location*8);
+ 260   1          for (i = 0; i<=7; i++) 
+ 261   1          Lcd_Chr_Cp(lcd_char[i]);
+ 262   1      }
+ 263          
+ 264          /*------------------------------------------------------------------*-
+ 265            --- Ket thuc file ---------------------
+ 266          -*------------------------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    317    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,64 @@
+C51 COMPILER V9.52.0.0   UART_MODE1                                                        02/05/2020 11:06:30 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE UART_MODE1
+OBJECT MODULE PLACED IN .\UART_Mode1.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\Lib\UART_Mode1.c BROWSE DEBUG OBJECTEXTEND PRINT(.\UART_Mode1.lst) TABS(
+                    -2) OBJECT(.\UART_Mode1.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\Lib\UARTMode1.h"
+   3          
+   4          void UART_Init()
+   5          {
+   6   1        SM0 = 0; SM1 = 1;  // chon UART mode 1
+   7   1        TMOD = 0x20;       // 0010 xxxx chon Timer 1 che do 8 bit tu dong nap lai  
+   8   1        TH1 = 0xFD;        // chon toc do Baud = 9600 
+   9   1        TR1 = 1;           // cho phep Timer 1
+  10   1        TI = 1;            // san sang gui du lieu
+  11   1        REN = 1;           // cho phep nhan du lieu 
+  12   1      }
+  13          
+  14          void UART_Write(char c) 
+  15          {
+  16   1        while(TI==0);
+  17   1        TI = 0;
+  18   1        SBUF = c;
+  19   1      }
+  20          
+  21          void UART_Write_Text(char *str)
+  22          {
+  23   1        unsigned char i = 0; 
+  24   1        while(str[i] != 0)
+  25   1        {
+  26   2          UART_Write(str[i]);
+  27   2          i++;
+  28   2        }
+  29   1      }
+  30          
+  31          bit UART_Data_Ready()
+  32          { 
+  33   1        return RI;
+  34   1      }
+  35          
+  36          char UART_Read()
+  37          {
+  38   1        RI = 0;
+  39   1        return SBUF;
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     65    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

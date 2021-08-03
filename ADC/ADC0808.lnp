@@ -1,0 +1,5 @@
+"mainADC0808.obj",
+".\delay.obj",
+".\LCD4.obj" 
+TO "ADC0808" 
+

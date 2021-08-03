@@ -1,0 +1,64 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\25LCxxx\EEPROM_25LCXXX\EEPROM_25LCXXX.uvproj
+Project File Date:  02/27/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(25): error C193: '=': illegal type conversion from/to 'void'
+main.c(94): error C202: 'CS': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(25): error C193: '=': illegal type conversion from/to 'void'
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(95): warning C206: 'SPI_Write': missing function-prototype
+main.c(95): error C267: 'SPI_Write': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(98): warning C206: 'SPI_Read': missing function-prototype
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  SPI_READ
+    MODULE:  .\Objects\main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SPI_READ
+    MODULE:  .\Objects\main.obj (MAIN)
+    ADDRESS: 088DH
+Program Size: data=12.0 xdata=0 code=214
+creating hex file from ".\Objects\EEPROM_25LCXXX"...
+".\Objects\EEPROM_25LCXXX" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  SPI_READ
+    MODULE:  .\Objects\main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SPI_READ
+    MODULE:  .\Objects\main.obj (MAIN)
+    ADDRESS: 088DH
+Program Size: data=12.0 xdata=0 code=214
+creating hex file from ".\Objects\EEPROM_25LCXXX"...
+".\Objects\EEPROM_25LCXXX" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(98): warning C206: 'SPI_Read': missing function-prototype
+compiling Delay.c...
+linking...
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  SPI_READ
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SPI_READ
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 088DH
+Program Size: data=12.0 xdata=0 code=214
+creating hex file from "EEPROM_25LCXXX"...
+"EEPROM_25LCXXX" - 0 Error(s), 3 Warning(s).

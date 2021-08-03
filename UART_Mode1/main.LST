@@ -1,0 +1,45 @@
+C51 COMPILER V9.52.0.0   MAIN                                                              02/05/2020 11:14:52 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\Lib\UARTMode1.h"
+   3          
+   4          
+   5          void main()
+   6          { 
+   7   1        char i;
+   8   1        //UART 0 mode 1, Baud=9600
+   9   1        
+  10   1        UART_Init();
+*** WARNING C206 IN LINE 10 OF main.c: 'UART_Init': missing function-prototype
+  11   1        
+  12   1        while(1)
+  13   1        {
+  14   2          UART_Write_Text("Alo");
+  15   2          while(UART_Data_Ready()==0)
+  16   2          { 
+  17   3            i = UART_Read();
+  18   3            UART_Write(i);
+  19   3          }
+  20   2        }
+  21   1      }   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     27    ----
+   CONSTANT SIZE    =      4    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

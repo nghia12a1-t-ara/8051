@@ -1,0 +1,83 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\ADC\ADC0808.uvproj
+Project File Date:  02/23/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling mainADC0808.c...
+mainADC0808.c(32): warning C173: missing return-expression
+mainADC0808.c(42): warning C206: 'ADC0808_read': missing function-prototype
+mainADC0808.c(56): error C141: syntax error near ''
+Target not created
+Build target 'Target 1'
+compiling mainADC0808.c...
+mainADC0808.c(32): warning C173: missing return-expression
+mainADC0808.c(42): warning C206: 'ADC0808_read': missing function-prototype
+mainADC0808.c(32): warning C290: missing return value
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _ADC0808_READ/MAINADC0808
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_OUT/LCD4
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_CUSTOM_CHR/LCD4
+*** ERROR L127: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  ADC0808_read
+    MODULE:  mainADC0808.obj (MAINADC0808)
+*** ERROR L128: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  ADC0808_read
+    MODULE:  mainADC0808.obj (MAINADC0808)
+    ADDRESS: 1000A5CH
+Program Size: data=23.0 xdata=0 const=0 code=1203
+Target not created
+Build target 'Target 1'
+compiling mainADC0808.c...
+mainADC0808.c(45): warning C206: 'ADC0808_read': missing function-prototype
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _ADC0808_READ/MAINADC0808
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_OUT/LCD4
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_CUSTOM_CHR/LCD4
+*** ERROR L127: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  ADC0808_read
+    MODULE:  mainADC0808.obj (MAINADC0808)
+*** ERROR L128: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  ADC0808_read
+    MODULE:  mainADC0808.obj (MAINADC0808)
+    ADDRESS: 1000A5CH
+Program Size: data=22.0 xdata=0 const=0 code=1202
+Target not created
+Build target 'Target 1'
+compiling mainADC0808.c...
+mainADC0808.c(45): warning C206: 'ADC0808_read': missing function-prototype
+mainADC0808.c(45): error C267: 'ADC0808_read': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling mainADC0808.c...
+mainADC0808.c(45): warning C206: 'ADC0808_read': missing function-prototype
+mainADC0808.c(45): error C267: 'ADC0808_read': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling mainADC0808.c...
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_OUT/LCD4
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_CUSTOM_CHR/LCD4
+Program Size: data=22.0 xdata=0 const=0 code=1204
+"ADC0808" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_OUT/LCD4
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _LCD_CUSTOM_CHR/LCD4
+Program Size: data=22.0 xdata=0 const=0 code=1204
+creating hex file from "ADC0808"...
+"ADC0808" - 0 Error(s), 2 Warning(s).

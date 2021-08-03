@@ -1,0 +1,95 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/22/2021  21:43:35  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\GPIO.obj TO .\Objects\Bai1_GPIO PRINT (.\Listings\Bai1_GPIO.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\GPIO.obj (GPIO)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\Bai1_GPIO (GPIO)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0020H     UNIT         ?PR?_DELAY_MS?GPIO
+            CODE    0820H     0016H     UNIT         ?PR?MAIN?GPIO
+            CODE    0836H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Bai1_GPIO (GPIO)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?GPIO
+
+?PR?MAIN?GPIO
+  +--> ?PR?_DELAY_MS?GPIO
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Bai1_GPIO (GPIO)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        GPIO
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:0090H.0       PUBLIC        P1_0
+  C:0820H         PUBLIC        main
+  C:0800H         PUBLIC        _delay_ms
+  -------         PROC          MAIN
+  C:0820H         LINE#         5
+  C:0820H         LINE#         6
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/22/2021  21:43:35  PAGE 2
+
+
+  C:0820H         LINE#         8
+  C:0822H         LINE#         11
+  C:0822H         LINE#         12
+  C:0822H         LINE#         13
+  C:0824H         LINE#         14
+  C:082BH         LINE#         15
+  C:082DH         LINE#         16
+  C:0834H         LINE#         17
+  -------         ENDPROC       MAIN
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        delay_time
+  -------         DO            
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:0800H         LINE#         20
+  C:0800H         LINE#         21
+  C:0800H         LINE#         22
+  C:0800H         LINE#         23
+  C:080AH         LINE#         24
+  C:080AH         LINE#         25
+  C:081FH         LINE#         26
+  C:081FH         LINE#         27
+  -------         ENDPROC       _DELAY_MS
+  -------         ENDMOD        GPIO
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0036H BYTE ( 2%) *
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=69
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

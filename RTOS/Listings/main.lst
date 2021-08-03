@@ -1,0 +1,104 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              04/02/2021 16:49:28 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\RTX51\main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "rtos.h"
+   2          
+   3          struct generic_sync xdata sem;
+   4          struct generic_sync xdata mut;
+   5          
+   6          struct {
+   7            char ten;
+   8            
+   9          } tests = { 0 };
+  10          
+  11          void task_A()
+  12          {
+  13   1        while(1) {
+  14   2          k_acquire(&mut);
+  15   2          k_yield();
+  16   2          if(tests.ten == 10) {
+  17   3            k_release(&mut);
+  18   3            break;
+  19   3          } else {
+  20   3            tests.ten += 1;
+  21   3            k_release(&mut);  
+  22   3          }
+  23   2          k_yield();
+  24   2        }
+  25   1        k_suspend(TASK_NULL);
+  26   1        for(;;);
+  27   1      }
+  28          
+  29          void task_B() {
+  30   1        while(1) {
+  31   2          k_acquire(&mut);  
+  32   2          k_yield();
+  33   2          if(tests.ten == 10) {
+  34   3            k_release(&mut);
+  35   3            break;
+  36   3          } else {
+  37   3            tests.ten += 1;
+  38   3            k_release(&mut);  
+  39   3          }
+  40   2          k_yield();
+  41   2        }
+  42   1        
+  43   1        k_waiton(&sem);
+  44   1        for(;;);
+  45   1      }
+  46          
+  47          void task_C() {
+  48   1        k_signalto(&sem);
+  49   1        for(;;) {
+  50   2          k_yield();  
+  51   2        }
+  52   1      }
+  53          
+  54          void task_D() {
+C51 COMPILER V9.60.0.0   MAIN                                                              04/02/2021 16:49:28 PAGE 2   
+
+  55   1        k_acquire(&mut);
+  56   1        k_yield();
+  57   1        k_release(&mut);
+  58   1        k_suspend(TASK_NULL);
+  59   1        for(;;);
+  60   1      }
+  61          
+  62          void k_user_trap(const char* cause)
+  63          {
+  64   1        while(cause);
+  65   1      }
+  66          
+  67          void main()
+  68          {
+  69   1        k_create_semaphore(&sem);
+  70   1        k_create_mutex(&mut);
+  71   1      
+  72   1        k_task_create(task_A, "a", 1);
+  73   1        k_task_create(task_B, "b", 1);
+  74   1        k_task_create(task_C, "c", 0);
+  75   1        k_task_create(task_D, "d", 1);
+  76   1      
+  77   1        k_start();
+  78   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    231    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =      8    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

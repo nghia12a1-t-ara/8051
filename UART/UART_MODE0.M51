@@ -1,0 +1,117 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        10/16/2019  23:25:58  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE main.obj, .\delay.obj TO UART_MODE0
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  .\delay.obj (DELAY)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  UART_MODE0 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0020H     UNIT         ?PR?_DELAY_MS?DELAY
+            CODE    0820H     001EH     UNIT         ?PR?MAIN?MAIN
+            CODE    083EH     000EH     UNIT         ?PR?_UART_WRITE?MAIN
+            CODE    084CH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   UART_MODE0 (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?_UART_WRITE?MAIN
+  +--> ?PR?_DELAY_MS?DELAY
+
+
+
+SYMBOL TABLE OF MODULE:  UART_MODE0 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  B:00B0H.2       PUBLIC        P3_2
+  B:0098H.1       PUBLIC        TI
+  C:0820H         PUBLIC        main
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/16/2019  23:25:58  PAGE 2
+
+
+  C:083EH         PUBLIC        _UART_WRITE
+  D:0099H         PUBLIC        SBUF
+  B:0098H.7       PUBLIC        SM0
+  B:0098H.6       PUBLIC        SM1
+  -------         PROC          _UART_WRITE
+  D:0007H         SYMBOL        b
+  C:083EH         LINE#         4
+  C:083EH         LINE#         5
+  C:083EH         LINE#         6
+  C:0840H         LINE#         7
+  C:0843H         LINE#         8
+  C:0847H         LINE#         9
+  C:0849H         LINE#         10
+  C:084BH         LINE#         11
+  -------         ENDPROC       _UART_WRITE
+  -------         PROC          MAIN
+  C:0820H         LINE#         13
+  C:0820H         LINE#         14
+  C:0820H         LINE#         15
+  C:0824H         LINE#         16
+  C:0824H         LINE#         17
+  C:0824H         LINE#         18
+  C:0829H         LINE#         19
+  C:0830H         LINE#         20
+  C:0835H         LINE#         21
+  C:083CH         LINE#         22
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0800H         PUBLIC        _delay_ms
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        t
+  -------         DO            
+  D:0004H         SYMBOL        x
+  D:0002H         SYMBOL        y
+  -------         ENDDO         
+  C:0800H         LINE#         3
+  C:0800H         LINE#         4
+  C:0800H         LINE#         6
+  C:080AH         LINE#         7
+  C:0818H         LINE#         8
+  C:081FH         LINE#         9
+  -------         ENDPROC       _DELAY_MS
+  -------         ENDMOD        DELAY
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 004CH BYTE ( 3%) *
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=91
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

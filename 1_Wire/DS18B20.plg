@@ -1,0 +1,74 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\1_Wire\DS18B20.uvproj
+Project File Date:  03/01/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(61): error C141: syntax error near '{'
+main.c(63): error C231: 'PIN': redefinition
+main.c(63): error C231: 'PIN': redefinition
+main.c(64): error C141: syntax error near '6'
+main.c(64): error C231: '_T0_delay_ms': redefinition
+main.c(66): error C279: 'PIN': multiple initialization
+main.c(66): error C231: 'PIN': redefinition
+main.c(66): error C231: 'PIN': redefinition
+main.c(67): error C141: syntax error near '9'
+main.c(67): error C231: '_T0_delay_ms': redefinition
+main.c(69): error C231: 'result': redefinition
+main.c(69): error C247: non-address/-constant initializer
+main.c(70): error C141: syntax error near '55'
+main.c(70): error C231: '_T0_delay_ms': redefinition
+main.c(72): error C141: syntax error near 'return'
+main.c(73): error C141: syntax error near '}'
+compiling delay.c...
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=13.0 xdata=0 const=0 code=332
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(126): error C202: 'Code7seg': undefined identifier
+main.c(127): error C202: 'Code7seg': undefined identifier
+main.c(128): error C202: 'Code7seg': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+creating hex file from "DS18B20"...
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Rebuild target 'Target 1'
+compiling main.c...
+compiling delay.c...
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+creating hex file from "DS18B20"...
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+creating hex file from "DS18B20"...
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+creating hex file from "DS18B20"...
+"DS18B20" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=11.0 xdata=0 const=10 code=345
+creating hex file from "DS18B20"...
+"DS18B20" - 0 Error(s), 0 Warning(s).

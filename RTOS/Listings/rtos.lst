@@ -1,0 +1,501 @@
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE RTOS
+OBJECT MODULE PLACED IN .\Objects\rtos.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\RTX51\rtos.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\rtos.lst) TABS(2) OBJECT(.\Objects\rtos.obj)
+
+line level    source
+
+   1          #include "rtos.h"
+   2          #include <reg51.h>
+   3          #include <intrins.h>
+   4          #include <string.h>
+   5          
+   6          #define _s(s) #s
+   7          
+   8          /** @author Vinicius Kursancew 
+   9           * @addtogroup rtos 
+  10           * @{
+  11           * @publicsection
+  12           * @defgroup internal Documentation of data and functions that are used only within rtos.c
+  13           */
+  14          
+  15          //Possible task states
+  16          //!@ingroup internal
+  17          #define READY 0 
+  18          //!@ingroup internal
+  19          #define BLOCKED 1
+  20          //!@ingroup internal
+  21          #define SUSPENDED 2
+  22          //!@ingroup internal
+  23          #define SUSPENDED_BLOCKED 3
+  24          
+  25          /** Holds which tasks are ready in an array of bitmasks, each bit representing a task
+  26          @ingroup internal
+  27          */
+  28          PRIORITY_BITMASK_t(ready_masks);
+  29          /**
+  30          Holds info of which task on each priority level was run the last time.
+  31          @ingroup internal
+  32          */
+  33          PRIORITY_BITMASK_t(rr_masks);
+  34          
+  35          /** Structure that holds information about a task.
+  36          It is statically defined on the array 'tasks' and cannot hold more tasks than defined
+  37          on MAX_TASK_COUNT macro.
+  38          @ingroup internal
+  39          */
+  40          struct task {
+  41            byte_t stack_copy[MAX_STACK_SIZE]; //!< Copy of the stack for the task
+  42            char name[MAX_NAME+1]; //!< A name representing the task
+  43            byte_t prio; //!< Priority, 0=lowest, highest is defined on the MAX_PRIORITIES macro
+  44            byte_t state; //!< Current state of the task, may be: READY, BLOCKED, SUSPENDED or SUSPENDED_BLOCKED
+  45            byte_t sp; //!< Count-1 of bytes that were on the stack when context switched (SP-STACK_START)
+  46          };
+  47          
+  48          /**
+  49          Definition of the tasks structure. The index of this array is the corresponding's task id.
+  50          @ingroup internal
+  51          */
+  52          XRAM_t(struct task, tasks)[MAX_TASK_COUNT];
+  53          
+  54          /** Pointer to currently running task. It is stored on the internal ram so access is faster.
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 2   
+
+  55          @ingroup internal
+  56          */
+  57          IDATA_TO_XRAM_PTR_t(struct task, current_task);
+  58          
+  59          /** Index of the currently running task on the tasks[] array
+  60          @ingroup internal
+  61          */
+  62          IDATA_t(byte_t, current_task_index) = 0;
+  63          
+  64          /** Count of tasks created by calling k_task_create.
+  65          @ingroup internal
+  66          */
+  67          IDATA_t(byte_t, task_count) = 0;
+  68          
+  69          /** Byte used for saving and restoring EA on calling CBEGIN and CEND macros
+  70          @ingroup internal
+  71          */
+  72          volatile IDATA_t(byte_t, ea_save) = 0;
+  73          
+  74          /** Defined in low_level.a51, assembly routine to save R0-R7 on the stack
+  75          @ingroup internal
+  76          */
+  77          extern void push_bank();
+  78          
+  79          /** Defined in low_level.a51, assembly routine to restore R0-R7 from the stack
+  80          @ingroup internal
+  81          */
+  82          extern void pop_bank();
+  83          
+  84          /** Defined in low_level.a51, assembly routine to allow calling RETI from C code.
+  85          This is a hack for Keil C51 because defining a function as interrupt on
+  86          Keil compiler unavoidably inserts a preamble on the ISR which
+  87          manipulates the stack, but in this case (conext-switch) the OS is
+  88          manipulating the stack.
+  89          @ingroup internal
+  90          */
+  91          extern void returni();
+  92          
+  93          /** Save context to stack.
+  94          @ingroup internal
+  95          */
+  96          #define SAVE    \
+  97            _push_(ACC);  \
+  98            _push_(IE);   \
+  99            _push_(B);      \
+ 100            _push_(DPL);  \
+ 101            _push_(DPH);  \
+ 102            push_bank();  \
+ 103            _push_(PSW);
+ 104          
+ 105          /** Restores context.
+ 106          @ingroup internal
+ 107          */
+ 108          #define RESTORE \
+ 109            _pop_(PSW); \
+ 110            pop_bank(); \
+ 111            _pop_(DPH); \
+ 112            _pop_(DPL); \
+ 113            _pop_(B); \
+ 114            _pop_(IE);  \
+ 115            _pop_(ACC);
+ 116          
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 3   
+
+ 117          /** Writes bytes in the range STACK_START -> SP to the external ram
+ 118          into the current task stack context.
+ 119          @ingroup internal
+ 120          */
+ 121          #define TO_XRAM { \
+ 122            byte_t idata * idata ram = (byte_t idata *)STACK_START; \
+ 123            IDATA_TO_XRAM_PTR_t(byte_t,  xram) = current_task->stack_copy;  \
+ 124            current_task->sp = SP - STACK_START; \
+ 125            while((byte_t)ram <= SP) *(xram++) = *(ram++); }
+ 126          
+ 127          /** Writes bytes from the current task saved context back to the stack
+ 128          region in the IDATA ram.
+ 129          @ingroup internal
+ 130          */        
+ 131          #define TO_STACK { \
+ 132            byte_t idata * idata ram = (byte_t idata *)STACK_START; \
+ 133            IDATA_TO_XRAM_PTR_t(byte_t,  xram) = current_task->stack_copy;  \
+ 134            SP = STACK_START + current_task->sp; \
+ 135            while((byte_t)ram <= SP) *(ram++) = *(xram++); }
+ 136          
+ 137          /**
+ 138          Macro used to mark a task as ready, parameter is the task index from the tasks[] array
+ 139          @ingroup internal
+ 140          */
+ 141          #define TASK_SET_READY_MASK(index) ready_masks[tasks[(index)].prio] |= 1<<((index));
+ 142          
+ 143          /** Macro used to mark a task as not ready. Parameter is the task index from the tasks[] array
+ 144          After this the task cannod be scheduled to run until TASK_SET_READY_MASK is called again on it
+ 145          @ingroup internal
+ 146          */
+ 147          #define TASK_CLR_READY_MASK(index) ready_masks[tasks[(index)].prio] &= ~(1<<((index)));
+ 148          
+ 149          /** Finds out which is the next task to run.
+ 150          This is an internal function for the kernel.
+ 151          @ingroup internal
+ 152          */
+ 153          static void schedule()
+ 154          {
+ 155   1        register unsigned char i;
+ 156   1        register unsigned char j;
+ 157   1        for(i = MAX_PRIORITIES; i >= 0; --i) {
+ 158   2          //Looks up which priority level is the highest to have some task ready
+ 159   2          if(ready_masks[i]) {
+ 160   3            do {
+ 161   4              //Loops in the bitmask to find which is the next task
+ 162   4              rr_masks[i] >>= 1;
+ 163   4              if(!rr_masks[i]) rr_masks[i] |= 1<<(task_count-1);
+ 164   4            } while(!(ready_masks[i] & rr_masks[i]));
+ 165   3            break;  
+ 166   3          }
+ 167   2        }
+ 168   1        current_task_index = 0;
+ 169   1        //with the mask we need to map back to the task number
+ 170   1        j = rr_masks[i];
+ 171   1        while(j >>= 1) {
+ 172   2          ++current_task_index;
+ 173   2        }
+ 174   1        current_task = tasks + current_task_index;  
+ 175   1      }
+ 176          
+ 177          #if !defined(noSEMAPHORE) || !defined(noMUTEX)
+ 178          /** Wakes up a task that is blocked putting it in the correct state.
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 4   
+
+ 179          Also properly calling TASK_SET_READY_MASK.
+ 180          This is an internal function for the kernel.
+ 181          @param t task to wake up
+ 182          @ingroup internal
+ 183          */
+ 184          static void wake_task(byte_t t)
+ 185          {
+ 186   1        switch(tasks[t].state) {
+ 187   2          case SUSPENDED:
+ 188   2          case SUSPENDED_BLOCKED:
+ 189   2            tasks[t].state = SUSPENDED;
+ 190   2            break;
+ 191   2          default:
+ 192   2            tasks[t].state = READY;
+ 193   2            TASK_SET_READY_MASK(t);
+ 194   2        }
+ 195   1      }
+ 196          #endif
+ 197          
+ 198          /** Creates a task. The task is marked as ready to run.
+ 199          @param fun function with prototype void fun(void) when control is passed to the task
+ 200          @param name a string that holds a name that represents the task
+ 201          @param prio priority of the task, 0 being the lowest, macro MAX_PRIORITIES defines the maximum
+ 202          @return task number
+ 203          */
+ 204          char k_task_create( voidf fun, const char* name, byte_t prio )
+ 205          {
+ 206   1        XRAM_PTR_t(struct task, mtask = &tasks[task_count]);
+ 207   1        IDATA_t(unsigned short, fun_addr) = (unsigned short)fun; //casts the function address to a ushort so it c
+             -an be assigned to the stack
+ 208   1        IDATA_TO_XRAM_PTR_t(byte_t, stk) = XRAM_PTR_cast(byte_t, mtask);
+ 209   1      
+ 210   1        mtask->prio = prio;
+ 211   1      
+ 212   1        //copies task name to the task structure
+ 213   1        strncpy(mtask->name, name, MAX_NAME);
+ 214   1        //mtask->prio = prio;
+ 215   1        mtask->state = READY;
+ 216   1      
+ 217   1        *stk = fun_addr&0xff; //Low-byte first on the stack
+ 218   1        ++stk;
+ 219   1        *stk = (fun_addr>>8)&0xff; //High-byte of return address
+ 220   1        ++stk;
+ 221   1        *stk = 1; //A
+ 222   1        ++stk;
+ 223   1        ET0 = 1; 
+ 224   1        *stk = IE;
+ 225   1        ++stk;
+ 226   1        for(; stk != XRAM_PTR_cast(byte_t, mtask)+15; ++stk)
+ 227   1          *stk = 0xaa; //DPTR, B and R0-R7
+ 228   1      
+ 229   1        *stk = PSW; //IE
+ 230   1        
+ 231   1        //16 bytes initially on stack(SP points to the last item, instead of next, so its 1 less than 16)
+ 232   1        //RETURN(2)+ACC(1)+IE(1)+B(1)+DPTR(2)+R0-7(8)+PSW(1)
+ 233   1        mtask->sp = 15;
+ 234   1        return task_count++;
+ 235   1      }
+ 236          
+ 237          /** Starts the scheduler and never returns.
+ 238          It is very important to notice that the user must provide the IDLE task.
+ 239          The idle task is a task that is always ready to execute, a simple definition would be:
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 5   
+
+ 240          
+ 241          @code
+ 242          void idle()
+ 243          {
+ 244            for(;;) k_yield();
+ 245          }
+ 246          @endcode
+ 247          
+ 248          and then, before calling k_start():
+ 249          @code
+ 250          k_create_task(idle, "idl", 0);
+ 251          @endcode
+ 252          
+ 253          */
+ 254          void k_start()
+ 255          {
+ 256   1        char i;
+ 257   1        EA = 0;
+ 258   1      
+ 259   1        //Initializing the masks that represent ready tasks
+ 260   1        for(i = 0; i < task_count; ++i) {
+ 261   2          ready_masks[tasks[i].prio] |= 1 << i;
+ 262   2        }
+ 263   1        //An array holds information of which task is next on each priority level
+ 264   1        for(i = 0; i < MAX_PRIORITIES; ++i) {
+ 265   2          rr_masks[i] = 1;
+ 266   2        }
+ 267   1        SETUP_TIMER;
+ 268   1      
+ 269   1        current_task_index = 0;
+ 270   1        current_task = tasks;
+ 271   1      
+ 272   1        //Now we go!
+ 273   1        schedule();
+ 274   1          TO_STACK
+ 275   1        RESTORE
+ 276   1        EA = 1;
+ 277   1        return; //returning here will go to the beginning of the task selected by schedule()
+ 278   1      }
+ 279          
+ 280          /** Causes a context switch.
+ 281          */
+ 282          void k_yield()
+ 283          {
+ 284   1        EA = 0;
+ 285   1        SAVE
+ 286   1        TO_XRAM
+ 287   1        schedule();
+ 288   1        TO_STACK
+ 289   1        RESTORE
+ 290   1        EA = 1;
+ 291   1      }
+ 292          
+ 293          /** Interrupt for timer0, in case the system is using preemption
+ 294          @ingroup internal
+ 295          */
+ 296          void timer_isr()
+ 297          {
+ 298   1        EA = 0;
+ 299   1        TR0 = 0;
+ 300   1        TL0 = 0xb0;
+ 301   1        TH0 = 0x3c;
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 6   
+
+ 302   1        TR0 = 1;
+ 303   1      #ifndef noPREEMPTION
+                SAVE
+                TO_XRAM
+                schedule();
+                TO_STACK
+                RESTORE
+              #endif
+ 310   1        TF0 = 0;
+ 311   1        EA = 1;
+ 312   1        returni();
+ 313   1        EA = 1; //this avoids compiler optimization to LJMP
+ 314   1      }
+ 315          
+ 316          
+ 317          #ifndef noSUSPEND
+ 318          /** Suspends current task, it will only be ready again if k_resume is called on the task
+ 319          @param t task number that should be suspended, passing TASK_NULL will suspend currently running task
+ 320          */
+ 321          void k_suspend(byte_t t)
+ 322          {
+ 323   1        CBEGIN
+ 324   1        if(t == TASK_NULL)
+ 325   1          t = current_task_index;
+ 326   1        tasks[t].state = SUSPENDED;
+ 327   1        TASK_CLR_READY_MASK(t);
+ 328   1        if(t == current_task_index) {
+ 329   2          CEND
+ 330   2          k_yield();
+ 331   2        } else {
+ 332   2          CEND
+ 333   2        }
+ 334   1      
+ 335   1      }
+ 336          
+ 337          /** Resumes execution of a task, making it ready to run iff its not BLOCKED
+ 338          @param t task to resume
+ 339          */
+ 340          void k_resume(byte_t t)
+ 341          {
+ 342   1        CBEGIN
+ 343   1        switch(tasks[t].state) {
+ 344   2          case SUSPENDED_BLOCKED:
+ 345   2          case BLOCKED:
+ 346   2            tasks[t].state = BLOCKED;
+ 347   2            break;
+ 348   2          default:
+ 349   2            tasks[t].state = READY;
+ 350   2            TASK_SET_READY_MASK(t);
+ 351   2        }
+ 352   1        CEND
+ 353   1      }
+ 354          #endif
+ 355          
+ 356          #ifndef noSEMAPHORE
+ 357          /** Initializes a semaphore. It is initially unavailable.
+ 358          @param sem pointer to a generic_sync structure that will hold the semaphore
+ 359          */
+ 360          void k_create_semaphore(XRAM_PTR_t(struct generic_sync, sem))
+ 361          {
+ 362   1        sem->blocked = 1;
+ 363   1        sem->wake_me.single = 0xFF;
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 7   
+
+ 364   1      }
+ 365          
+ 366          /** Waits on a semaphopre until it becomes available. Returns immediately if it's already available.
+ 367          @param sem pointer to semaphore to waiton
+ 368          */
+ 369          void k_waiton(XRAM_PTR_t(struct generic_sync, sem))
+ 370          {
+ 371   1        CBEGIN
+ 372   1        if(sem->blocked) {
+ 373   2          sem->wake_me.single = current_task_index;
+ 374   2          current_task->state = BLOCKED;
+ 375   2          TASK_CLR_READY_MASK(current_task_index);
+ 376   2          CEND
+ 377   2          k_yield();
+ 378   2        } else {
+ 379   2          sem->wake_me.single = 0xFF;
+ 380   2          sem->blocked = 1;
+ 381   2          CEND
+ 382   2        }
+ 383   1      }
+ 384          
+ 385          /** Signals a semaphore and wakes the task sleeping on it (if any).
+ 386          @param sem pointer to semaphore to signal
+ 387          */
+ 388          void k_signalto(XRAM_PTR_t(struct generic_sync, sem))
+ 389          {
+ 390   1        CBEGIN
+ 391   1        // is a semaphore is blocked and someone tried to waiton we should wake
+ 392   1        if(sem->blocked && (sem->wake_me.single != 0xFF) ) {
+ 393   2          wake_task(sem->wake_me.single);
+ 394   2          sem->wake_me.single = 0xFF;   
+ 395   2        } else {
+ 396   2          sem->blocked = 0;
+ 397   2        }
+ 398   1        CEND
+ 399   1      }
+ 400          #endif
+ 401          
+ 402          #ifndef noMUTEX
+ 403          /** Initializes a mutex object.
+ 404          @param mut pointer to generic_sync structure that will represent the mutex
+ 405          */
+ 406          void k_create_mutex(XRAM_PTR_t(struct generic_sync, mut))
+ 407          {
+ 408   1        for(mut->blocked = 0; mut->blocked < MAX_MUTEX_SHARE; ++mut->blocked)
+ 409   1          mut->wake_me.array[mut->blocked] = 0xFF;
+ 410   1        mut->blocked = 0;
+ 411   1      }
+ 412          
+ 413          /** Tryes to acquire a mutex. If the mutex is already acquired, blocks until it is released.
+ 414          @param mut pointer to mutex to try to acquire
+ 415          */
+ 416          void k_acquire(XRAM_PTR_t(struct generic_sync, mut))
+ 417          {
+ 418   1        register byte_t i;
+ 419   1        CBEGIN
+ 420   1        while(mut->blocked) {
+ 421   2          i = 0;
+ 422   2          while(mut->wake_me.array[i] != 0xFF) {
+ 423   3            ++i;
+ 424   3          }
+ 425   2          mut->wake_me.array[i] = current_task_index;
+C51 COMPILER V9.60.0.0   RTOS                                                              04/02/2021 16:49:28 PAGE 8   
+
+ 426   2          current_task->state = BLOCKED;
+ 427   2          TASK_CLR_READY_MASK(current_task_index);
+ 428   2          CEND
+ 429   2          k_yield();
+ 430   2          CBEGIN
+ 431   2        }
+ 432   1        mut->blocked = 1;
+ 433   1        CEND
+ 434   1      }
+ 435          
+ 436          /** Releases an acquired mutex and wake tasks pending on it.
+ 437          Notice that releasing an un-acquired mutex, or a mutex acquired by another task is illegal.
+ 438          @param mut pointer to mutex to be release
+ 439          */
+ 440          void k_release(XRAM_PTR_t(struct generic_sync, mut))
+ 441          {
+ 442   1        register byte_t i;
+ 443   1        CBEGIN
+ 444   1      #ifndef noTRAP
+                if(mut->blocked == 0) {
+                  //BUG:
+                  //RELEASING UNAQUIRED MUTEX IS ILLEGAL
+                  k_user_trap(__FILE__","_s(__LINE__)": unaquired mutex");
+                }
+              #endif
+ 451   1        for(i = 0; i < MAX_MUTEX_SHARE; ++i) {
+ 452   2          //wake up
+ 453   2          if(mut->wake_me.array[i] != 0xFF) {
+ 454   3            wake_task(mut->wake_me.array[i]);
+ 455   3            mut->wake_me.array[i] = 0xFF;
+ 456   3          }
+ 457   2        }
+ 458   1        mut->blocked = 0; //restore attribute value
+ 459   1        CEND
+ 460   1      }
+ 461          /** @} */
+ 462          #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1641    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    152    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      14
+   IDATA SIZE       =     11      13
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

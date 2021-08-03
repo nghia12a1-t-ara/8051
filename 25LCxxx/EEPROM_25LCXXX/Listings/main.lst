@@ -1,0 +1,145 @@
+C51 COMPILER V9.52.0.0   MAIN                                                              02/29/2020 21:59:45 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\lib\Delay.h"
+   3          
+   4          sbit SPI_SCLK = P2^0;
+   5          sbit SPI_MOSI = P2^1;
+   6          sbit SPI_MISO = P2^2;
+   7          sbit SPI_CS   = P2^3;
+   8          
+   9          void Soft_SPI_Init();
+  10          void Soft_SPI_Write(unsigned char b);
+  11          unsigned char Soft_SPI_Read(void);
+  12          void EEPROM_25LCxxx_Write(unsigned int add, unsigned char b);
+  13          unsigned char EEPROM_25LCxxx_Read(unsigned int addr);
+  14          unsigned char EEPROM_25LCxxx_WIP();
+  15          
+  16          void main()
+  17          {
+  18   1        // Khoi tao giao tiep SPI
+  19   1        Soft_SPI_Init();
+  20   1        
+  21   1        EEPROM_25LCxxx_Write(0,0x55);
+  22   1        EEPROM_25LCxxx_Write(1,0x01);
+  23   1        
+  24   1        P1 = EEPROM_25LCxxx_Read(0);
+  25   1        
+  26   1        while(1)
+  27   1        {
+  28   2      
+  29   2        }
+  30   1      }
+  31          
+  32          // Ghi mot byte b sang EEPROM, tai dia chi add
+  33          void EEPROM_25LCxxx_Write(unsigned int add, unsigned char b)
+  34          {
+  35   1        SPI_CS = 0;
+  36   1        Soft_SPI_Write(0x06);     // Gui lenh WREN
+  37   1        SPI_CS = 1;
+  38   1        
+  39   1        SPI_CS = 0;
+  40   1        Soft_SPI_Write(0x02);           // Gui lenh WRITE
+  41   1        Soft_SPI_Write(add>>8);         // Gui byte cao cua dia chi
+  42   1        Soft_SPI_Write(add & 0x00FF);   // Gui byte thap cua dia chi
+  43   1        Soft_SPI_Write(b);
+  44   1        SPI_CS = 1;
+  45   1        
+  46   1        while(EEPROM_25LCxxx_WIP());    //ktra xem ghi xong chua?
+  47   1      }
+  48          
+  49          void Soft_SPI_Init()
+  50          {
+  51   1        SPI_CS = 1; 
+  52   1        SPI_SCLK = 0;
+  53   1        SPI_MISO = 1;
+  54   1      }
+  55          
+C51 COMPILER V9.52.0.0   MAIN                                                              02/29/2020 21:59:45 PAGE 2   
+
+  56          unsigned char Soft_SPI_Read(void)
+  57          {
+  58   1        // software SPI read, MSB read first
+  59   1        unsigned char i, b;
+  60   1      
+  61   1        for(i=0;i<8;i++)
+  62   1        {
+  63   2          b <<= 1;
+  64   2          SPI_SCLK = 1;
+  65   2          if(SPI_MISO)
+  66   2            b |= 0x01;
+  67   2          SPI_SCLK = 0;
+  68   2        }
+  69   1      
+  70   1        return b;
+  71   1      }
+  72          
+  73          void Soft_SPI_Write(unsigned char b)
+  74          {
+  75   1        // software SPI, send MSB first
+  76   1        unsigned char i;
+  77   1      
+  78   1        for(i=0;i<8;i++)
+  79   1        {
+  80   2          if((b&0x80)==0x80)
+  81   2            SPI_MOSI = 1;
+  82   2          else
+  83   2            SPI_MOSI = 0;
+  84   2      
+  85   2          SPI_SCLK = 1;
+  86   2          b <<= 1;
+  87   2          SPI_SCLK = 0;
+  88   2        }
+  89   1      }
+  90          
+  91          unsigned char EEPROM_25LCxxx_Read(unsigned int addr)
+  92          {
+  93   1        unsigned char b;
+  94   1        
+  95   1        SPI_CS = 0;
+  96   1        Soft_SPI_Write(0x03);
+  97   1        Soft_SPI_Write(addr>>8);
+  98   1        Soft_SPI_Write(addr & 0x00FF);
+  99   1        b = Soft_SPI_Read();
+ 100   1        SPI_CS = 1;
+ 101   1        
+ 102   1        return b;
+ 103   1      }
+ 104          
+ 105          unsigned char EEPROM_25LCxxx_WIP()
+ 106          {
+ 107   1        unsigned char result;
+ 108   1        
+ 109   1        SPI_CS = 0;
+ 110   1        Soft_SPI_Write(0x05);
+ 111   1        result = Soft_SPI_Read();
+ 112   1        SPI_CS = 1;
+ 113   1        
+ 114   1        return result & 0x01;
+ 115   1      }
+ 116          
+ 117          
+C51 COMPILER V9.52.0.0   MAIN                                                              02/29/2020 21:59:45 PAGE 3   
+
+ 118          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    176    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

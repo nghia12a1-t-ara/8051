@@ -1,0 +1,5 @@
+"main.obj",
+".\Delay.obj" 
+TO "EEPROM_25LCXXX" 
+PRINT(".\Listings\EEPROM_25LCXXX.m51") RAMSIZE(256) 
+DW(16) 

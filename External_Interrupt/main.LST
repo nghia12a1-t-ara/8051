@@ -1,0 +1,54 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              01/07/2021 19:28:28 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include <stdio.h>
+   3          
+   4          void Delay_1ms(void);
+   5          
+   6          int main()
+   7          {
+   8   1          int i = 0;
+   9   1          TMOD = 0x01;
+  10   1          P2_0 = 0;
+  11   1          while(1)
+  12   1          {
+  13   2              P2_0 = (~P2_0);
+  14   2              for(i = 0; i<1000; i++)
+  15   2              {
+  16   3                  Delay_1ms();
+  17   3              }
+  18   2          }
+  19   1      }
+  20          void Delay_1ms(void)
+  21          {
+  22   1          TH0 = 0xFC;
+  23   1          TL0 = 0x18;
+  24   1          TR0 = 1;
+  25   1          while(!TF0);
+  26   1          TF0 = 0;
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     55    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

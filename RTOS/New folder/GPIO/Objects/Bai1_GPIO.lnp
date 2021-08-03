@@ -1,0 +1,3 @@
+".\Objects\GPIO.obj" 
+TO ".\Objects\Bai1_GPIO" 
+PRINT(".\Listings\Bai1_GPIO.m51") RAMSIZE(256) 

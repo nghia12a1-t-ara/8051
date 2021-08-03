@@ -1,0 +1,124 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\UART_Mode1\UART_Mode1.uvproj
+Project File Date:  02/05/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(9): error C141: syntax error near '}'
+main.c(10): error C141: syntax error near 'while'
+main.c(10): error C141: syntax error near '1'
+main.c(12): error C141: syntax error near ''c''
+main.c(12): error C231: '_UART_Write': redefinition
+main.c(13): error C141: syntax error near '}'
+compiling UART_Mode1.c...
+Target not created
+Rebuild target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(10): error C141: syntax error near 'while'
+main.c(10): error C141: syntax error near '1'
+main.c(12): error C141: syntax error near ''c''
+main.c(12): error C231: '_UART_Write': redefinition
+main.c(13): error C141: syntax error near '}'
+compiling UART_Mode1.c...
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(10): error C141: syntax error near 'while'
+main.c(10): error C141: syntax error near '1'
+main.c(12): error C141: syntax error near ''c''
+main.c(12): error C231: '_UART_Write': redefinition
+main.c(13): error C141: syntax error near '}'
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(9): error C141: syntax error near 'while'
+main.c(9): error C141: syntax error near '1'
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_INIT?UART_MODE1
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_WRITE_TEXT?UART_MODE1
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_DATA_READY?UART_MODE1
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_READ?UART_MODE1
+Program Size: data=12.0 xdata=0 code=127
+creating hex file from "UART_Mode1"...
+"UART_Mode1" - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_DATA_READY?UART_MODE1
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_READ?UART_MODE1
+Program Size: data=12.0 xdata=0 code=143
+creating hex file from "UART_Mode1"...
+"UART_Mode1" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(18): error C141: syntax error near ''
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(17): error C141: syntax error near ''
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(9): error C141: syntax error near 'char'
+main.c(9): error C202: 'i': undefined identifier
+main.c(15): error C202: 'i': undefined identifier
+main.c(16): error C202: 'i': undefined identifier
+main.c(18): error C141: syntax error near ''
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(9): warning C206: 'UART_Init': missing function-prototype
+main.c(19): error C141: syntax error near ''
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(9): warning C206: 'UART_Init': missing function-prototype
+linking...
+Program Size: data=13.0 xdata=0 code=156
+creating hex file from "UART_Mode1"...
+"UART_Mode1" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(10): warning C206: 'UART_Init': missing function-prototype
+linking...
+BL51 BANKED LINKER/LOCATER V6.22 - SN: Eval Version
+COPYRIGHT KEIL ELEKTRONIK GmbH 1987 - 2009
+"main.obj",
+".\UART_Mode1.obj" 
+TO "UART_Mode1" 
+ru 
+*** FATAL ERROR L204: INVALID KEYWORD
+    POS: 54
+    C:\KEIL\C51\BIN\BL51.EXE main.obj, .\UART_Mode1.obj TO UART_Mode1 RU#
+Target not created
+Build target 'Target 1'
+linking...
+Program Size: data=13.0 xdata=0 code=156
+creating hex file from "UART_Mode1"...
+"UART_Mode1" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=13.0 xdata=0 code=156
+creating hex file from "UART_Mode1"...
+"UART_Mode1" - 0 Error(s), 0 Warning(s).

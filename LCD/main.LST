@@ -1,0 +1,43 @@
+C51 COMPILER V9.52.0.0   MAIN                                                              02/15/2020 15:30:47 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c OMF2 BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\lib\delay.h"
+   3          #include "..\lib\LCD.h"
+   4          
+   5          sbit RS = P2^0;
+   6          sbit EN = P2^1;
+   7          #define Data P3
+   8          
+   9          void main()
+  10          {
+  11   1        LCD_Init();
+  12   1        while(1)
+  13   1        {
+  14   2          LCD_cmd(0x01);
+  15   2        }
+  16   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     10    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
