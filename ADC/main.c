@@ -32,6 +32,8 @@ void main()
 		adc_value = ADC0804_read();
 		voltage = adc_value * 19.61f;
 		
+		UART_Send(adc_value);
+		
 		Lcd_Chr(1,1,adc_value/100 + 0x30);
 		Lcd_Chr_Cp(adc_value%100/10 + 0x30);
 		Lcd_Chr_Cp(adc_value%10 + 0x30);
@@ -45,4 +47,51 @@ void main()
 		Delay_ms(500);
 	}
 }
+
+
+
+
+
+
+
+
+
+1s read Temperature/Humidity
+
+Readbutton()	- 4 btn
+DriveLED
+UART_Send()
+UART_Rei()
+
+Led1_State = 0;
+
+int main ()
+{
+	Init();
+	Timer_Init();
+	Start_Timer(); //1s
+	
+	while(1)
+	{
+		if
+		if
+		if
+		if
+		if (State == 1)
+			readsensor();
+			LCD_display(sensor);
+			UART_Send();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 		

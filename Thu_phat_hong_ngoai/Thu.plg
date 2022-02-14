@@ -1,0 +1,23 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\Thu_phat_hong_ngoai\Thu.uvproj
+Project File Date:  02/16/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main2.c...
+main2.c(22): error C141: syntax error near '}'
+Target not created
+Build target 'Target 1'
+compiling main2.c...
+main2.c(22): error C141: syntax error near '}'
+Target not created
+Build target 'Target 1'
+compiling main2.c...
+linking...
+Program Size: data=11.0 xdata=0 const=0 code=102
+creating hex file from "Thu"...
+"Thu" - 0 Error(s), 0 Warning(s).

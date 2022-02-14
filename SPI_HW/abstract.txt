@@ -1,0 +1,22 @@
+Serial Peripheral Interface (SPI) Example Program
+=================================================
+This example program shows how to configure and use the SPI in a
+master mode for the following microcontrollers:
+
+   * ATMEL AT89S53
+   * ATMEL AT89S8252
+
+To run this program...
+
+1. Choose your target
+2. Build the project (Project Menu, Build Target)
+3. Start the debugger (Debug Menu, Start/Stop Debug Session)
+4. View the Serial Window (View Menu, Serial Window #1)
+5. View the SPI peripheral (Peripheral Menu, SPI)
+6. View the Port 1 (Peripheral Menu, I/O Port)
+7. Display the memory area X:0x700000.
+8. Run the program (Debug Menu, Go)
+
+A debug script (SPI_AT250X0.ini) includes debugger signal functions that
+simulate an Atmel AT250X0 SPI memory device.  This device is simulated
+using a simple state machine implemented with switch statements.

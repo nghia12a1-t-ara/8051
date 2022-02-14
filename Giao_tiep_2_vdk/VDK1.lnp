@@ -1,0 +1,4 @@
+"main.obj",
+".\delay.obj",
+".\UART_Mode1.obj" 
+TO "VDK1" 

@@ -1,0 +1,18 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\C#\Giaotiepmaytinhcoban.uvproj
+Project File Date:  02/08/2020
+
+<h2>Output:</h2>
+Rebuild target 'Target 1'
+compiling main.c...
+main.c(8): warning C206: 'UART_Init': missing function-prototype
+main.c(14): warning C206: '_getkey': missing function-prototype
+main.c(17): error C220: illegal constant expression
+main.c(20): error C220: illegal constant expression
+compiling delay.c...
+compiling UART_Mode1.c...
+Target not created

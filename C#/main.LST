@@ -1,0 +1,65 @@
+C51 COMPILER V9.52.0.0   MAIN                                                              02/08/2020 20:01:28 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c OMF2 BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "stdio.h"
+   3          void main()
+   4          { 
+   5   1        char c;
+   6   1      
+   7   1        SM0 = 0; SM1 = 1;  // chon UART mode 1
+   8   1        TMOD = 0x20;       // 0010 xxxx chon Timer 1 che do 8 bit tu dong nap lai  
+   9   1        TH1 = 0xFD;        // chon toc do Baud = 9600 
+  10   1        TR1 = 1;           // cho phep Timer 1
+  11   1        TI = 1;            // san sang gui du lieu
+  12   1        REN = 1;    
+  13   1        
+  14   1        P2_0 = 0;
+  15   1        P2_1 = 0;
+  16   1        putchar(65);
+  17   1        while(1)
+  18   1        {
+  19   2            c = _getkey();
+  20   2          switch(c)
+  21   2          {
+  22   3            case '0':
+  23   3                P2_0 = !P2_0;
+  24   3                if(P2_0)
+  25   3                  printf("LED is ON!\n");
+  26   3                else
+  27   3                  printf("LED is OFF!\n");
+  28   3                break; 
+  29   3            case '1':
+  30   3                P2_1 = !P2_1;
+  31   3                if(P2_1)
+  32   3                  printf("MOTOR is ON!\n");
+  33   3                else
+  34   3                  printf("MOTOR is OFF!\n");
+  35   3                break; 
+  36   3          }
+  37   2        }
+  38   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     82    ----
+   CONSTANT SIZE    =     54    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

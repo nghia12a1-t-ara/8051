@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\KeilC V5\baitapkeilC\SPI_EEPROM.uvproj
+Project File Date:  02/27/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+SPI\main.c(21): warning C275: expression with possibly no effect
+SPI\main.c(52): warning C206: 'Soft_SPT_Write': missing function-prototype
+SPI\main.c(52): error C267: 'Soft_SPT_Write': requires ANSI-style prototype
+compiling delay.c...
+Target not created
+Build target 'Target 1'
+compiling main.c...
+SPI\main.c(21): warning C275: expression with possibly no effect
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    SOFT_SPI_READ/MAIN
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _DELAY_MS/DELAY
+Program Size: data=9.0 xdata=0 const=0 code=147
+"SPI_EEPROM" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    SOFT_SPI_READ/MAIN
+*** WARNING L16: UNCALLED FUNCTION, IGNORED FOR OVERLAY PROCESS
+    NAME:    _DELAY_MS/DELAY
+Program Size: data=9.0 xdata=0 const=0 code=147
+creating hex file from "SPI_EEPROM"...
+"SPI_EEPROM" - 0 Error(s), 2 Warning(s).

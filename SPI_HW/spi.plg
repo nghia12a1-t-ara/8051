@@ -1,0 +1,14 @@
+<html>
+<body>
+<pre>
+<h1>µVision2 Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\jward\Desktop\New Folder\spi.uv2
+Project File Date:  11/07/2002
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=32.1 xdata=20 code=1435
+"spi" - 0 Error(s), 0 Warning(s).

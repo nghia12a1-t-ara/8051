@@ -1,0 +1,79 @@
+C51 COMPILER V9.52.0.0   LCD                                                               02/15/2020 15:31:25 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\LCD.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\Lib\LCD.c OMF2 BROWSE DEBUG PRINT(.\LCD.lst) TABS(2) OBJECT(.\LCD.obj)
+
+line level    source
+
+   1          #include "LCD.h"
+   2          #include "delay.h"
+   3          #include "regx51.h"
+   4          
+   5          sbit RS = P2^0;
+   6          sbit EN = P2^1;
+   7          #define Data P3
+   8          void LCD_cmd(unsigned char cmd)
+   9          {
+  10   1        RS = 0;
+  11   1        Data = cmd; 
+  12   1        EN = 0;
+  13   1        EN = 1;
+  14   1        delay_ms(2);
+  15   1      }
+  16          
+  17          void LCD_Init()
+  18          {
+  19   1        LCD_cmd(0x30);
+  20   1        delay_ms(5);
+  21   1        LCD_cmd(0x30);
+  22   1        delay_ms(1);
+  23   1        LCD_cmd(0x30);
+  24   1        LCD_cmd(0x38);    //2 dong, font 5x8
+  25   1        
+  26   1        LCD_cmd(0x01);    //Xoa noi dung hien thi
+  27   1        LCD_cmd(0x0C);    //Bat hien thi, tat con tro 
+  28   1      }
+  29          
+  30          void LCD_Chr_cp(char c)
+  31          {
+  32   1        RS = 1;
+  33   1        Data = c;
+  34   1        EN = 0;
+  35   1        EN = 1;
+  36   1        delay_ms(1);
+  37   1      }
+  38          
+  39          void LCD_out_cp(char *str)
+  40          {
+  41   1        unsigned char i = 0; 
+  42   1        while(str[i]!=0)
+  43   1        {
+  44   2          LCD_chr_cp(str[i]);
+*** WARNING C206 IN LINE 44 OF ..\Lib\LCD.c: 'LCD_chr_cp': missing function-prototype
+*** ERROR C267 IN LINE 44 OF ..\Lib\LCD.c: 'LCD_chr_cp': requires ANSI-style prototype
+  45   2          i++;
+  46   2        }
+  47   1      }
+  48          
+  49          void LCD_chr(unsigned char row, unsigned char col, char c)
+  50          {
+  51   1        unsigned char cmd;
+  52   1        cmd = (row == 1 ? 0x80:0xC0 + col - 1);
+  53   1        LCD_cmd(cmd);
+C51 COMPILER V9.52.0.0   LCD                                                               02/15/2020 15:31:25 PAGE 2   
+
+  54   1        LCD_chr_cp(c);
+  55   1      }
+  56          
+  57          void LCD_out(unsigned char row, unsigned char col, char *str)
+  58          {
+  59   1        unsigned char cmd;
+  60   1        cmd = (row == 1 ? 0x80:0xC0) + col - 1;
+  61   1        LCD_cmd(cmd);
+  62   1        LCD_out_cp(str);
+  63   1      }
+  64          
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  1 ERROR(S)

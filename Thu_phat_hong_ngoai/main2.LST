@@ -1,0 +1,55 @@
+C51 COMPILER V9.52.0.0   MAIN2                                                             02/16/2020 17:01:44 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN2
+OBJECT MODULE PLACED IN main2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main2.c OMF2 BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\lib\delay.h"
+   3          
+   4          void main()
+   5          {
+   6   1        unsigned char i, b;
+   7   1        while(1)
+   8   1        {
+   9   2          while(P3_2);  //chan nhan tin hieu P3.2 = 0, => co tin hieu gui ve
+  10   2          b = 0;        
+  11   2          for(i=0; i<8; i++)
+  12   2          {
+  13   3            b <<= 1;
+  14   3            delay_ms(2);
+  15   3            if(P3_2)      // p3.2 = 1
+  16   3            { 
+  17   4              b |= 0x01;
+  18   4            }
+  19   3            else
+  20   3            {
+  21   4              while(!P3_2); // doi P3.2 len 1  (nhan xong bit)
+  22   4            }
+  23   3            if(i!=7) while(P3_2); // doi P3.2 xuong 0 de doc tiep
+  24   3              //bit cuoi cung thi k can doi nua
+  25   3          }
+  26   2          P2 = b;
+  27   2        }
+  28   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     55    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

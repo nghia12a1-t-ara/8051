@@ -1,0 +1,236 @@
+BL51 BANKED LINKER/LOCATER V5.03                                                        05/30/2003  18:02:52  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE main.obj TO spi RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CSTPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (PRINTF)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CLDOPTR)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?PLDIIDATA)
+  C:\KEIL\C51\LIB\C51S.LIB (?C?CCASE)
+  C:\KEIL\C51\LIB\C51S.LIB (PUTCHAR)
+
+
+LINK MAP OF MODULE:  spi (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0016H     UNIT         _DATA_GROUP_
+                    001EH     0002H                  *** GAP ***
+            BIT     0020H.0   0001H.1   UNIT         _BIT_GROUP_
+                    0021H.1   0000H.7                *** GAP ***
+            IDATA   0022H     0001H     UNIT         ?STACK
+
+            * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
+            XDATA   0000H     0014H     UNIT         ?XD?MAIN
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     035CH     UNIT         ?PR?PRINTF?PRINTF
+            CODE    035FH     008EH     UNIT         ?C?LIB_CODE
+            CODE    03EDH     006CH     UNIT         ?PR?MAIN?MAIN
+            CODE    0459H     006AH     UNIT         ?PR?_WRITE_AT250X0?MAIN
+            CODE    04C3H     0058H     UNIT         ?PR?_READ_AT250X0?MAIN
+            CODE    051BH     0027H     UNIT         ?PR?PUTCHAR?PUTCHAR
+            CODE    0542H     0021H     UNIT         ?CO?MAIN
+            CODE    0563H     0017H     UNIT         ?PR?READ_STATUS?MAIN
+            CODE    057AH     0015H     UNIT         ?PR?_WRITE_ENABLE?MAIN
+            CODE    058FH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   spi (MAIN)
+
+
+SEGMENT                            BIT_GROUP          DATA_GROUP 
+  +--> CALLED SEGMENT           START    LENGTH     START    LENGTH
+-------------------------------------------------------------------
+?C_C51STARTUP                   -----    -----      -----    -----
+BL51 BANKED LINKER/LOCATER V5.03                                                      05/30/2003  18:02:52  PAGE 2
+
+
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                   -----    -----      0008H    0002H
+  +--> ?CO?MAIN
+  +--> ?PR?_WRITE_AT250X0?MAIN
+  +--> ?PR?_READ_AT250X0?MAIN
+  +--> ?PR?PRINTF?PRINTF
+
+?PR?_WRITE_AT250X0?MAIN         -----    -----      000AH    0007H
+  +--> ?PR?_WRITE_ENABLE?MAIN
+  +--> ?PR?READ_STATUS?MAIN
+
+?PR?_READ_AT250X0?MAIN          -----    -----      000AH    0007H
+
+?PR?PRINTF?PRINTF               0020H.0  0001H.1    000AH    0014H
+  +--> ?PR?PUTCHAR?PUTCHAR
+
+
+
+SYMBOL TABLE OF MODULE:  spi (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0459H         PUBLIC        _write_at250x0
+  B:0090H.0       PUBLIC        P1_0
+  B:0098H.1       PUBLIC        TI
+  C:03EDH         PUBLIC        main
+  C:0563H         PUBLIC        read_status
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:00D5H         PUBLIC        SPCR
+  D:0086H         PUBLIC        SPDR
+  D:00AAH         PUBLIC        SPSR
+  D:008DH         PUBLIC        TH1
+  B:0088H.6       PUBLIC        TR1
+  C:057AH         PUBLIC        _write_enable
+  C:04C3H         PUBLIC        _read_at250x0
+  -------         PROC          READ_STATUS
+  -------         DO            
+  D:0007H         SYMBOL        stat
+  -------         ENDDO         
+  C:0563H         LINE#         22
+  C:0563H         LINE#         23
+  C:0563H         LINE#         26
+  C:0565H         LINE#         28
+  C:0568H         LINE#         29
+  C:056DH         LINE#         31
+  C:0570H         LINE#         32
+  C:0575H         LINE#         33
+  C:0577H         LINE#         35
+  C:0579H         LINE#         37
+  C:0579H         LINE#         38
+  -------         ENDPROC       READ_STATUS
+  -------         PROC          _WRITE_ENABLE
+BL51 BANKED LINKER/LOCATER V5.03                                                      05/30/2003  18:02:52  PAGE 3
+
+
+  D:0007H         SYMBOL        flag
+  C:057AH         LINE#         42
+  C:057AH         LINE#         44
+  C:057AH         LINE#         45
+  C:057CH         LINE#         47
+  C:0587H         LINE#         48
+  C:058CH         LINE#         50
+  C:058EH         LINE#         51
+  -------         ENDPROC       _WRITE_ENABLE
+  -------         PROC          _READ_AT250X0
+  D:0004H         SYMBOL        address
+  D:000CH         SYMBOL        buf
+  D:000FH         SYMBOL        length
+  C:04C3H         LINE#         55
+  C:04CDH         LINE#         59
+  C:04CDH         LINE#         60
+  C:04CFH         LINE#         62
+  C:04E1H         LINE#         63
+  C:04E6H         LINE#         65
+  C:04E9H         LINE#         66
+  C:04EEH         LINE#         68
+  C:04FBH         LINE#         69
+  C:04FBH         LINE#         70
+  C:04FEH         LINE#         71
+  C:0503H         LINE#         72
+  C:0516H         LINE#         73
+  C:0518H         LINE#         75
+  C:051AH         LINE#         76
+  -------         ENDPROC       _READ_AT250X0
+  -------         PROC          _WRITE_AT250X0
+  D:0004H         SYMBOL        address
+  D:000CH         SYMBOL        buf
+  D:000FH         SYMBOL        length
+  C:0459H         LINE#         80
+  C:0463H         LINE#         84
+  C:0463H         LINE#         85
+  C:0468H         LINE#         87
+  C:0475H         LINE#         88
+  C:0475H         LINE#         89
+  C:047CH         LINE#         91
+  C:047EH         LINE#         93
+  C:0490H         LINE#         94
+  C:0495H         LINE#         96
+  C:0498H         LINE#         97
+  C:049DH         LINE#         99
+  C:04B0H         LINE#         100
+  C:04B5H         LINE#         102
+  C:04B7H         LINE#         103
+  C:04BEH         LINE#         105
+  -------         ENDPROC       _WRITE_AT250X0
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        i
+  X:0000H         SYMBOL        buffer
+  -------         ENDDO         
+  C:03EDH         LINE#         110
+  C:03EDH         LINE#         111
+BL51 BANKED LINKER/LOCATER V5.03                                                      05/30/2003  18:02:52  PAGE 4
+
+
+  C:03EDH         LINE#         118
+  C:03F0H         LINE#         119
+  C:03F3H         LINE#         120
+  C:03F6H         LINE#         121
+  C:03F8H         LINE#         122
+  C:03FAH         LINE#         126
+  C:03FDH         LINE#         130
+  C:03FDH         LINE#         131
+  C:03FDH         LINE#         132
+  C:040FH         LINE#         133
+  C:0421H         LINE#         135
+  C:0426H         LINE#         136
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        ?C?CLDPTR
+  C:035FH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?CSTPTR
+  C:0378H         PUBLIC        ?C?CSTPTR
+  -------         ENDMOD        ?C?CSTPTR
+
+  -------         MODULE        PRINTF
+  D:000AH         PUBLIC        ?_PRINTF517?BYTE
+  D:000AH         PUBLIC        ?_PRINTF?BYTE
+  D:000AH         PUBLIC        ?_SPRINTF517?BYTE
+  D:000AH         PUBLIC        ?_SPRINTF?BYTE
+  C:0065H         PUBLIC        _PRINTF
+  C:0065H         PUBLIC        _PRINTF517
+  C:005FH         PUBLIC        _SPRINTF
+  C:005FH         PUBLIC        _SPRINTF517
+  -------         ENDMOD        PRINTF
+
+  -------         MODULE        ?C?CLDOPTR
+  C:038AH         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+  -------         MODULE        ?C?PLDIIDATA
+  C:03B7H         PUBLIC        ?C?PLDIIDATA
+  -------         ENDMOD        ?C?PLDIIDATA
+
+  -------         MODULE        ?C?CCASE
+  C:03C7H         PUBLIC        ?C?CCASE
+  -------         ENDMOD        ?C?CCASE
+
+  -------         MODULE        PUTCHAR
+  C:051BH         PUBLIC        _PUTCHAR
+  -------         ENDMOD        PUTCHAR
+
+Program Size: data=32.1 xdata=20 code=1435
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

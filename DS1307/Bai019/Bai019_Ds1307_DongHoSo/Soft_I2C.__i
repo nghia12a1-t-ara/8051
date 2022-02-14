@@ -1,0 +1,1 @@
+"..\Lib\Soft_I2C.c" OMF2 BROWSE DEBUG PRINT(.\Soft_I2C.lst) OBJECT(.\Soft_I2C.obj)

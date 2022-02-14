@@ -1,0 +1,9 @@
+"main.obj",
+".\Delay.obj",
+".\LCD4.obj",
+".\Soft_I2C.obj",
+".\Rtc_Ds1307.obj",
+".\LunarCalendar.obj" 
+TO "Bai019_Ds1307_DongHoSo" 
+
+ru 

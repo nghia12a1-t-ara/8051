@@ -1,0 +1,169 @@
+C51 COMPILER V7.06   MAIN                                                                  05/30/2003 18:02:52 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          #include <AT898252.H>
+   2          #include <stdio.h>
+   3          
+   4          /*-----------------------------------------------------------------------------
+   5          -----------------------------------------------------------------------------*/
+   6          #define AT250X0_WREN_OPCODE     (0x06)
+   7          #define AT250X0_WRDI_OPCODE     (0x04)
+   8          #define AT250X0_RDSR_OPCODE     (0x05)
+   9          #define AT250X0_WRSR_OPCODE     (0x01)
+  10          #define AT250X0_READ_OPCODE(a)  ((((a) & 0x0100) >> 0x05) | 0x03)
+  11          #define AT250X0_WRITE_OPCODE(a) ((((a) & 0x0100) >> 0x05) | 0x02)
+  12          
+  13          #define AT250X0_ADDRESS_LSB(a)  ((a) & 0x00FF)
+  14          
+  15          #define AT250X0_CS      P1_0
+  16          
+  17          #define AT250X0_STAT_BUSY       0x01
+  18          #define AT250X0_STAT_WREN       0x02
+  19          
+  20          /*-----------------------------------------------------------------------------
+  21          -----------------------------------------------------------------------------*/
+  22          unsigned char read_status (void)
+  23          {
+  24   1      unsigned char stat;
+  25   1      
+  26   1      AT250X0_CS = 0;
+  27   1      
+  28   1      SPDR = AT250X0_RDSR_OPCODE;
+  29   1      while ((SPSR & 0x80) == 0);
+  30   1      
+  31   1      SPDR = 0xFF;
+  32   1      while ((SPSR & 0x80) == 0);
+  33   1      stat = SPDR;
+  34   1      
+  35   1      AT250X0_CS = 1;
+  36   1      
+  37   1      return (stat);
+  38   1      }
+  39          
+  40          /*-----------------------------------------------------------------------------
+  41          -----------------------------------------------------------------------------*/
+  42          void write_enable (
+  43            unsigned char flag)
+  44          {
+  45   1      AT250X0_CS = 0;
+  46   1      
+  47   1      SPDR = (flag == 0) ? AT250X0_WRDI_OPCODE : AT250X0_WREN_OPCODE;
+  48   1      while ((SPSR & 0x80) == 0);
+  49   1      
+  50   1      AT250X0_CS = 1;
+  51   1      }
+  52          
+  53          /*-----------------------------------------------------------------------------
+  54          -----------------------------------------------------------------------------*/
+  55          void read_at250x0 (
+C51 COMPILER V7.06   MAIN                                                                  05/30/2003 18:02:52 PAGE 2   
+
+  56            unsigned address,
+  57            unsigned char *buf,
+  58            unsigned length)
+  59          {
+  60   1      AT250X0_CS = 0;
+  61   1      
+  62   1      SPDR = AT250X0_READ_OPCODE(address);
+  63   1      while ((SPSR & 0x80) == 0);
+  64   1      
+  65   1      SPDR = AT250X0_ADDRESS_LSB(address);
+  66   1      while ((SPSR & 0x80) == 0);
+  67   1      
+  68   1      while (length--)
+  69   1        {
+  70   2        SPDR = 0xFF;
+  71   2        while ((SPSR & 0x80) == 0);
+  72   2        *buf++ = SPDR;
+  73   2        }
+  74   1      
+  75   1      AT250X0_CS = 1;
+  76   1      }
+  77          
+  78          /*-----------------------------------------------------------------------------
+  79          -----------------------------------------------------------------------------*/
+  80          void write_at250x0 (
+  81            unsigned address,
+  82            unsigned char *buf,
+  83            unsigned length)
+  84          {
+  85   1      write_enable (1);
+  86   1      
+  87   1      for (; length--; address++)
+  88   1        {
+  89   2        while (read_status () & AT250X0_STAT_BUSY);
+  90   2      
+  91   2        AT250X0_CS = 0;
+  92   2      
+  93   2        SPDR = AT250X0_WRITE_OPCODE(address);
+  94   2        while ((SPSR & 0x80) == 0);
+  95   2      
+  96   2        SPDR = AT250X0_ADDRESS_LSB(address);
+  97   2        while ((SPSR & 0x80) == 0);
+  98   2      
+  99   2        SPDR = *buf++;
+ 100   2        while ((SPSR & 0x80) == 0);
+ 101   2      
+ 102   2        AT250X0_CS = 1;
+ 103   2        }
+ 104   1      
+ 105   1      write_enable (0);
+ 106   1      }
+ 107          
+ 108          /*-----------------------------------------------------------------------------
+ 109          -----------------------------------------------------------------------------*/
+ 110          void main (void)
+ 111          {
+ 112   1      unsigned i;
+ 113   1      static unsigned char xdata buffer [20];
+ 114   1      
+ 115   1      /*-----------------------------------------------
+ 116   1      Initialize the serial port.
+ 117   1      -----------------------------------------------*/
+C51 COMPILER V7.06   MAIN                                                                  05/30/2003 18:02:52 PAGE 3   
+
+ 118   1      SCON  = 0x50;
+ 119   1      TMOD |= 0x20;
+ 120   1      TH1   = 221;
+ 121   1      TR1   = 1;
+ 122   1      TI    = 1;
+ 123   1      
+ 124   1      /*-----------------------------------------------
+ 125   1      -----------------------------------------------*/
+ 126   1      SPCR = 0x53;   /* 01010011 */
+ 127   1      
+ 128   1      /*-----------------------------------------------
+ 129   1      -----------------------------------------------*/
+ 130   1      while (1)
+ 131   1        {
+ 132   2        write_at250x0 (0, "This is a test", 15);
+ 133   2        read_at250x0 (0, buffer, sizeof(buffer));
+ 134   2      
+ 135   2        for (i = 0; i < sizeof(buffer); i++)
+ 136   2          printf ("Buffer[%u]=%2.2X\n", (unsigned) i, (unsigned) buffer[i]);
+ 137   2        }
+ 138   1      
+ 139   1      /*-----------------------------------------------
+ 140   1      -----------------------------------------------*/
+ 141   1      }
+ 142          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    346    ----
+   CONSTANT SIZE    =     33    ----
+   XDATA SIZE       =     20    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

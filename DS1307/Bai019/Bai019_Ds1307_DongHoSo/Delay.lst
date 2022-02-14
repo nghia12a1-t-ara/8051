@@ -1,0 +1,75 @@
+C51 COMPILER V9.01   DELAY                                                                 03/12/2014 12:21:37 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Delay.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\Lib\Delay.c OMF2 BROWSE DEBUG PRINT(.\Delay.lst) OBJECT(.\Delay.obj)
+
+line level    source
+
+   1          #include"Delay.h"
+   2          #include"main.h"
+   3          
+   4          #if(FREQ_OSC == 12000000)
+   5                  void Delay_ms(unsigned int t)
+   6                  {
+   7   1                      unsigned int x,y;
+   8   1                      for(x=0;x<t;x++)
+   9   1                      {
+  10   2                              for(y=0;y<123;y++);
+  11   2                      }       
+  12   1              }
+  13          #elif(FREQ_OSC == 11059200)
+                      void Delay_ms(unsigned int t)
+                      {
+                              unsigned int x, y;
+                              for(x = 0; x<t; x++)
+                              {
+                                      for(y=0; y<113; y++);
+                              }
+                      }
+              #elif(FREQ_OSC == 8000000)
+                      void Delay_ms(unsigned int t)
+                      {
+                              unsigned int x;
+                              unsigned char y;
+                              for(x = 0; x<t; x++)
+                              {
+                                      for(y=0; y<218; y++);
+                              }
+                      }
+              
+              #elif(FREQ_OSC == 4000000)
+                      void Delay_ms(unsigned int t)
+                      {
+                              unsigned int x;
+                              unsigned char y;
+                              for(x = 0; x<t; x++)
+                              {
+                                      for(y=0; y<106; y++);
+                              }
+                      }
+              #else
+                      #error "Khong co ham Delay_ms nao tuong ung"
+              #endif
+  46                  
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     32    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.01   DELAY                                                                 03/12/2014 12:21:37 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
